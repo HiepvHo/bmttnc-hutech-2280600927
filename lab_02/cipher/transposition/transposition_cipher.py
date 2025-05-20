@@ -12,12 +12,23 @@ class TranspositionCipher:
         return encrypted_text
 
     def decrypt(self, text, key):
-        decrypted_text = [''] * key
-        row, col = 0, 0
-        for symbol in text:
-            decrypted_text[col] += symbol
-            col += 1
-            if col == key or (col == key - 1 and row >= len(text) % key):
-                col = 0
-                row += 1
-        return ''.join(decrypted_text)
+        num_rows = (len(text) + key - 1) // key  # TINH SO HANG DUNG
+        matrix = [[''] * key for _ in range(num_rows)]  # TAOMATRANAOMATRAN
+        
+        pos = 0
+        for col in range(key):
+            current_row = 0
+            while current_row < num_rows and pos < len(text):
+                # KIEM TRA COT DU KY TU KHONGKHONG
+                if current_row == num_rows - 1 and col >= len(text) % key and len(text) % key != 0:
+                    break
+                matrix[current_row][col] = text[pos]
+                current_row += 1
+                pos += 1
+
+        decrypted_text = ''
+        for row in range(num_rows):
+            for col in range(key):
+                if matrix[row][col]:
+                    decrypted_text += matrix[row][col]
+        return decrypted_text
